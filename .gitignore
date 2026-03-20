@@ -1,0 +1,61 @@
+# Build results
+bin/
+obj/
+
+# User-specific files
+*.user
+*.userosscache
+*.suo
+*.userprefs
+
+# Visual Studio / VS Code
+.vs/
+.vscode/
+
+# MonoGame Content Builder output
+*.mgcb-editor
+*.mgcb-editor.*
+*.mgcontent
+*.xnb
+
+# MonoGame pipeline cache
+*.mgcb-cache/
+*.mgcb.cache
+
+# Logs
+*.log
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Rider / JetBrains
+.idea/
+
+# Resharper
+_ReSharper*/
+*.DotSettings.user
+
+# NuGet
+*.nupkg
+packages/
+
+# .NET Core
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Publish output
+publish/
+
+# Temporary files
+*.tmp
+*.temp
+
+# Backup files
+*.bak
+
+# Ignore generated content but NOT source assets
+# (IMPORTANT: keep your original textures/audio!)
+Content/bin/
+Content/obj/
