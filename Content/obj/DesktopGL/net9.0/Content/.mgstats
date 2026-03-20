@@ -1,0 +1,3 @@
+Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
+"C:/Users/andre/OneDrive/Documents/GamedevProjects/Potato/Potato/Content/potato.png","C:/Users/andre/OneDrive/Documents/GamedevProjects/Potato/Potato/Content/bin/DesktopGL/Content/potato.xnb","TextureProcessor","Texture2DContent",4163230,27040085,0.4843311
+"C:/Users/andre/OneDrive/Documents/GamedevProjects/Potato/Potato/Content/spike.png","C:/Users/andre/OneDrive/Documents/GamedevProjects/Potato/Potato/Content/bin/DesktopGL/Content/spike.xnb","TextureProcessor","Texture2DContent",2017621,100000085,1.2111627
