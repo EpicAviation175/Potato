@@ -17,7 +17,7 @@ namespace Potato
             this.position = position;
         }
 
-        public void Update()
+        public virtual void Update()
         {
             if (Keyboard.GetState().IsKeyDown(Keys.Space) && !isJumping)
             {
