@@ -21,13 +21,12 @@ namespace Potato
         private Scenes activeScene;
         private SpriteBatch _spriteBatch;
         private Player player;
-        private Spike spike;
         private Texture2D spikeTexture;
 
         List<Spike> spikes = new List<Spike>();
         List<Spike> killSpikes = new List<Spike>();
         static Random rand = new Random();
-        float timeWindow = rand.Next(3,5);
+        float timeWindow = rand.Next(1,3);
         float spawnTimer = 0f;
 
         public GameManager()
@@ -60,10 +59,10 @@ namespace Potato
             switch (activeScene)
             {
                 case Scenes.MENU:
-                    // TODO: menu update logic
+                    // _menu.Update();
                     break;
                 case Scenes.SETTINGS:
-                    // TODO: settings update logic
+                    // settings update logic
                     break;
                 case Scenes.GAME:
                     player?.Update();
@@ -71,76 +70,92 @@ namespace Potato
                     foreach (Spike s in spikes)
                     {
                         s.Update();
+
+                        if (player.Rect.Intersects(s.Rect))
+                        {
+                            ResetGame();
+                            SetScene(Scenes.MENU);
+                        }
                     }
 
                     if (spawnTimer >= timeWindow)
                     {
-                        spawnSpike();
+                        SpawnSpike();
                         spawnTimer = 0f;
-                        timeWindow = rand.Next(3, 5);
+                        timeWindow = rand.Next(1, 3);
                     }
-                    killSpike();
+                    KillSpike();
                     break;
             }
         }
 
         public void Draw(GameTime gameTime, GraphicsDevice graphicsDevice)
         {
+            graphicsDevice.Clear(Color.Beige);
+
+            _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
+
             switch (activeScene)
             {
+                case Scenes.GAME:
+                    if (player != null)
+                    {
+                        foreach (Spike spike in spikes)
+                        {
+                            _spriteBatch.Draw(spike.texture, spike.Rect, Color.Beige);
+                        }
+
+                        _spriteBatch.Draw(player.texture, player.Rect, Color.White);
+                    }
+                    break;
                 case Scenes.MENU:
+                    // menu drawing
                     break;
                 case Scenes.SETTINGS:
-                    graphicsDevice.Clear(Color.Beige);
+                    // settings drawing (null atm)
                     break;
-                case Scenes.GAME:
-                    graphicsDevice.Clear(Color.Beige);
-                    break;
-            }
-
-            _spriteBatch.Begin();
-
-            if (activeScene == Scenes.GAME && player != null)
-            {
-                _spriteBatch.Draw(player.texture, player.Rect, Color.White);
-
-                foreach (Spike spike in spikes)
-                {
-                    _spriteBatch.Draw(spike.texture, spike.Rect, Color.Beige);
-                }
             }
             _spriteBatch.End();
-
         }
 
         public void SetScene(Scenes scene)
         {
             activeScene = scene;
         }
-
+        
         public Scenes ActiveScene => activeScene;
 
-        public void spawnSpike()
+        public void SpawnSpike()
         {
-            Spike newspike = new Spike(spikeTexture, new Vector2(500, 330));
+            Spike newspike = new Spike(spikeTexture, new Vector2(800, 330));
             spikes.Add(newspike);
-            Debug.WriteLine("Spawned spike");
         }
 
-        public void killSpike()
+        public void KillSpike()
         {
             foreach (Spike spike in spikes)
             {
-                if (spike.position.X <= 0) 
+                if (spike.position.X <= -100) 
                 {
                     killSpikes.Add(spike);
                 }
             }
-            foreach (Spike spike in killSpikes)
+            if (killSpikes != null)
             {
-                spikes.Remove(spike);
+                foreach (Spike spike in killSpikes)
+                {
+                    spikes.Remove(spike);
+                }
                 killSpikes.Clear();
             }
+        }
+
+        public void ResetGame()
+        {
+            killSpikes.Clear();
+            spikes.Clear();
+            spawnTimer = 0;
+            timeWindow = rand.Next(1,3);
         }
     }
 }

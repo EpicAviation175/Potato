@@ -7,7 +7,7 @@ namespace Potato
 {
     class Spike : Sprite
     {
-        private float velocity = 5f;
+        private float velocity = 10f;
 
         public Spike(Texture2D texture, Vector2 position): base(texture, position)
         {
