@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Security.Cryptography.X509Certificates;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -22,6 +20,9 @@ namespace Potato
         private SpriteBatch _spriteBatch;
         private Player player;
         private Texture2D spikeTexture;
+        private Menu _menu;
+        private bool gameEnd;
+        private Game1 game;
 
         List<Spike> spikes = new List<Spike>();
         List<Spike> killSpikes = new List<Spike>();
@@ -29,20 +30,23 @@ namespace Potato
         float timeWindow = rand.Next(1,3);
         float spawnTimer = 0f;
 
-        public GameManager()
+        public GameManager(Game1 game)
         {
-            activeScene = Scenes.GAME;
+            this.game = game;
+            activeScene = Scenes.MENU;
+            _menu = new Menu(this, game);
         }
 
         public void LoadContent(ContentManager content, GraphicsDevice graphicsDevice)
         {
             _spriteBatch = new SpriteBatch(graphicsDevice);
 
+            _menu.LoadContent(content, graphicsDevice);
+
             var playerTexture = content.Load<Texture2D>("potato");
             player = new Player(playerTexture, new Vector2(65, 330));
 
             spikeTexture = content.Load<Texture2D>("spike");
-
         }
 
         public void Update(GameTime gameTime)
@@ -59,7 +63,7 @@ namespace Potato
             switch (activeScene)
             {
                 case Scenes.MENU:
-                    // _menu.Update();
+                    _menu.Update(gameTime);
                     break;
                 case Scenes.SETTINGS:
                     // settings update logic
@@ -73,10 +77,11 @@ namespace Potato
 
                         if (player.Rect.Intersects(s.Rect))
                         {
-                            ResetGame();
                             SetScene(Scenes.MENU);
                         }
                     }
+
+                    CheckResetGame();
 
                     if (spawnTimer >= timeWindow)
                     {
@@ -109,7 +114,7 @@ namespace Potato
                     }
                     break;
                 case Scenes.MENU:
-                    // menu drawing
+                    _menu.Draw(_spriteBatch);
                     break;
                 case Scenes.SETTINGS:
                     // settings drawing (null atm)
@@ -150,12 +155,16 @@ namespace Potato
             }
         }
 
-        public void ResetGame()
+        public void CheckResetGame()
         {
-            killSpikes.Clear();
-            spikes.Clear();
-            spawnTimer = 0;
-            timeWindow = rand.Next(1,3);
+            if (gameEnd)
+            {
+                killSpikes.Clear();
+                spikes.Clear();
+                spawnTimer = 0;
+                timeWindow = rand.Next(1,3);
+                gameEnd = false;
+            }
         }
     }
 }
