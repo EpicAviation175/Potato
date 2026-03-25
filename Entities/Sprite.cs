@@ -8,11 +8,19 @@ namespace Potato
         public Texture2D texture;
         public Vector2 position;
 
-        public Rectangle Rect
+        public virtual Rectangle Rect
         {
             get
             {
                 return new Rectangle((int)position.X, (int)position.Y, 100, 100);
+            }
+        }
+
+        public virtual Rectangle hitbox
+        {
+            get
+            {
+                return new Rectangle((int)position.X, (int)position.Y, 50, 50);
             }
         }
 

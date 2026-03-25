@@ -1,5 +1,3 @@
-using System;
-using System.Runtime.CompilerServices;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -13,6 +11,14 @@ namespace Potato
         {
             this.texture = texture;
             this.position = position;
+        }
+
+        public override Rectangle Rect
+        {
+            get
+            {
+                return new Rectangle((int)position.X, (int)position.Y, 100, 100);
+            }
         }
 
         public void Update()

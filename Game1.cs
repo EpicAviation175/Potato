@@ -20,6 +20,10 @@ public class Game1 : Game
 
     protected override void Initialize()
     {
+        _graphics.PreferredBackBufferWidth = 1920;
+        _graphics.PreferredBackBufferHeight = 1080;
+        _graphics.IsFullScreen = true;
+        _graphics.ApplyChanges();
         base.Initialize();
     }
 

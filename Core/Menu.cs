@@ -14,6 +14,11 @@ namespace Potato
         private Game1 game;
         public bool exit;
 
+        private Vector2 textMiddlePoint;
+        private Vector2 textPosition;
+
+        SpriteFont font;
+
         public Menu(GameManager gameManager, Game1 game)
         {
             this.gameManager = gameManager;
@@ -23,10 +28,14 @@ namespace Potato
         public void LoadContent(ContentManager content, GraphicsDevice graphics)
         {
             playButtonTexture = content.Load<Texture2D>("playbutton");
-            playButton = new Button(playButtonTexture, new Vector2(280, 200));
+            playButton = new Button(playButtonTexture, new Vector2((gameManager.screenWidth/2)-110, gameManager.screenHeight/2));
 
             exitButtonTexture = content.Load<Texture2D>("exitbutton");
-            exitButton = new Button(exitButtonTexture, new Vector2(400, 200));
+            exitButton = new Button(exitButtonTexture, new Vector2((gameManager.screenWidth/2)+10, gameManager.screenHeight/2));
+
+            font = game.Content.Load<SpriteFont>("pixellated");
+            textMiddlePoint = font.MeasureString("Potato") / 2;
+            textPosition = new Vector2(((gameManager.screenWidth / 2)+25) - textMiddlePoint.X, ((gameManager.screenHeight / 2)-75) - textMiddlePoint.Y);
         }
 
         public void Update(GameTime gameTime)
@@ -44,8 +53,28 @@ namespace Potato
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(playButtonTexture, playButton.rect, Color.Black);
-            spriteBatch.Draw(exitButtonTexture, exitButton.rect, Color.Black);
+            if (font != null)
+            {
+                spriteBatch.DrawString(font, "Potato", textPosition, Color.Black, 0f, textMiddlePoint, 5.0f, SpriteEffects.None, 0.5f);
+            }
+
+            if (playButton.mouseOverlap())
+            {
+                spriteBatch.Draw(playButtonTexture, playButton.rect2, Color.Black);
+            }
+            else
+            {
+                spriteBatch.Draw(playButtonTexture, playButton.rect, Color.Gray);
+            }
+
+            if (exitButton.mouseOverlap())
+            {
+                spriteBatch.Draw(exitButtonTexture, exitButton.rect2, Color.Black);
+            }
+            else
+            {
+                spriteBatch.Draw(exitButtonTexture, exitButton.rect, Color.Black);
+            }
         }
     }
 }

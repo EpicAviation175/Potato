@@ -10,11 +10,13 @@ namespace Potato
         private bool isJumping = false;
         private float jumpVelocity = -10f;
         private float gravity = 0f;
+        private float groundY;
 
-        public Player(Texture2D texture, Vector2 position): base(texture, position)
+        public Player(Texture2D texture, Vector2 position, float groundY): base(texture, position)
         {
             this.texture = texture;
             this.position = position;
+            this.groundY = groundY;
         }
 
         public virtual void Update()
@@ -37,9 +39,9 @@ namespace Potato
             position.Y += jumpVelocity;
             jumpVelocity += gravity;
 
-            if (position.Y >= 330)
+            if (position.Y >= groundY)
             {
-                position.Y = 330;
+                position.Y = groundY;
                 jumpVelocity = 0;
                 isJumping = false;
             }

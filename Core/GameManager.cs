@@ -24,6 +24,9 @@ namespace Potato
         private bool gameEnd;
         private Game1 game;
 
+        public int screenWidth;
+        public int screenHeight;
+
         List<Spike> spikes = new List<Spike>();
         List<Spike> killSpikes = new List<Spike>();
         static Random rand = new Random();
@@ -37,14 +40,20 @@ namespace Potato
             _menu = new Menu(this, game);
         }
 
+        private float groundY;
+
         public void LoadContent(ContentManager content, GraphicsDevice graphicsDevice)
         {
+            screenWidth = graphicsDevice.Viewport.Width;
+            screenHeight = graphicsDevice.Viewport.Height;
+            groundY = screenHeight - 150;
+
             _spriteBatch = new SpriteBatch(graphicsDevice);
 
             _menu.LoadContent(content, graphicsDevice);
 
             var playerTexture = content.Load<Texture2D>("potato");
-            player = new Player(playerTexture, new Vector2(65, 330));
+            player = new Player(playerTexture, new Vector2(screenWidth * 0.08f, groundY), groundY);
 
             spikeTexture = content.Load<Texture2D>("spike");
         }
@@ -59,7 +68,6 @@ namespace Potato
                 return;
             }
 
-            //update scenes
             switch (activeScene)
             {
                 case Scenes.MENU:
@@ -71,17 +79,27 @@ namespace Potato
                 case Scenes.GAME:
                     player?.Update();
 
+                    if (gameEnd)
+                    {
+                        killSpikes.Clear();
+                        spikes.Clear();
+                        spawnTimer = 0;
+                        timeWindow = rand.Next(1,3);
+                        player.position.X = screenWidth * 0.08f;
+                        player.position.Y = groundY;
+                        gameEnd = false;
+                    }
+
                     foreach (Spike s in spikes)
                     {
                         s.Update();
 
-                        if (player.Rect.Intersects(s.Rect))
+                        if (player.hitbox.Intersects(s.hitbox))
                         {
                             SetScene(Scenes.MENU);
+                            gameEnd = true;
                         }
                     }
-
-                    CheckResetGame();
 
                     if (spawnTimer >= timeWindow)
                     {
@@ -132,7 +150,8 @@ namespace Potato
 
         public void SpawnSpike()
         {
-            Spike newspike = new Spike(spikeTexture, new Vector2(800, 330));
+            float y = groundY + (player.texture.Height - spikeTexture.Height);
+            Spike newspike = new Spike(spikeTexture, new Vector2(screenWidth + 40, y));
             spikes.Add(newspike);
         }
 
@@ -140,7 +159,7 @@ namespace Potato
         {
             foreach (Spike spike in spikes)
             {
-                if (spike.position.X <= -100) 
+                if (spike.position.X <= -spike.texture.Width)
                 {
                     killSpikes.Add(spike);
                 }
@@ -152,18 +171,6 @@ namespace Potato
                     spikes.Remove(spike);
                 }
                 killSpikes.Clear();
-            }
-        }
-
-        public void CheckResetGame()
-        {
-            if (gameEnd)
-            {
-                killSpikes.Clear();
-                spikes.Clear();
-                spawnTimer = 0;
-                timeWindow = rand.Next(1,3);
-                gameEnd = false;
             }
         }
     }
